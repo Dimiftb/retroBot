@@ -43,7 +43,10 @@ async function gameLoop(board, floatPlane, isFloating, channel, player_1, player
             floatPlane = result[1];
         }
     }
-    message = await view.draw(channel, board, player_1, player_2, message);
+    let col = await view.draw(channel, board, player_1, player_2, message);
+
+    let mov = col[0];
+    message = col[1];
 
     var t = setTimeout(gameLoop.bind(null, board, floatPlane, isFloating, channel, player_1, player_2, message), 750);
 };
@@ -60,6 +63,48 @@ function moveBlock(board, floatPlane) {
         }
     }
     return [board, floatPlane];
+};
+
+function canGoLeft(board, floatPlane) {
+    for (var x = 0; x < board.length; x++)
+        for (var y = 0; y < board[0].length; y++)
+            if (floatPlane[x][y] !== 0 && board[x][y - 1] !== 0)
+                return false;
+}
+
+function canGoRight(board, floatPlane) {
+    for (var x = 0; x < board.length; x++)
+        for (var y = 0; y < board[0].length; y++)
+            if (floatPlane[x][y] !== 0 && board[x][y + 1] !== 0)
+                return false;
+}
+
+function goLeft(board, floatPlane) {
+    if (canGoLeft())
+        for (var x = 0; x < board.length; x++)
+            for (var y = 0; y < board[0].length; y++)
+                if (floatPlane[x][y] !== 0) {
+                    floatPlane[x][y - 1] = floatPlane[x][y];
+                    board[x][y - 1] = floatPlane[x][y];
+                    floatPlane[x][y] = 0;
+                    board[x][y] = 0;
+                }
+};
+
+function goRight(board, floatPlane) {
+    if (canGoRight())
+        for (var x = 0; x < board.length; x++)
+            for (var y = board[0].length - 1; y >= 0; y--)
+                if (floatPlane[x][y] !== 0) {
+                    floatPlane[x][y + 1] = floatPlane[x][y];
+                    board[x][y + 1] = floatPlane[x][y];
+                    floatPlane[x][y] = 0;
+                    board[x][y] = 0;
+                }
+};
+
+function rotate(board, floatPlane) {
+
 };
 
 function hasCollided(board, floatPlane) {
