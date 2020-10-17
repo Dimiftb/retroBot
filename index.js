@@ -1,5 +1,6 @@
 const { Client } = require('discord.js');
 const settings = require('./settings.js');
+const model = require('./tetris/Model.js');
 
 const bot = new Client();
 
@@ -21,7 +22,9 @@ bot.on('message', msg => {
             //     .then(collected => {
             //         msg.channel.send(`${collected.user} has accepted the challenge from <@${msg.author.id}>.`);
             //     });
+            model.init();
         });
+
 
     }
 });
