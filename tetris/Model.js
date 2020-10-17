@@ -42,11 +42,11 @@ async function gameLoop(board, floatPlane, isFloating, channel, player_1, player
     }
     message = await view.draw(channel, board, player_1, player_2, message);
 
-    var t = setTimeout(gameLoop.bind(null, board, floatPlane, isFloating, channel, player_1, player_2, message), 2000);
+    var t = setTimeout(gameLoop.bind(null, board, floatPlane, isFloating, channel, player_1, player_2, message), 750);
 };
 
 function moveBlock(board, floatPlane) {
-    for (var x = board.length - 1; x > 0; x--) {
+    for (var x = board.length - 1; x >= 0; x--) {
         for (var y = 0; y < board[0].length; y++) {
             if (floatPlane[x][y] !== 0) {
                 floatPlane[x + 1][y] = floatPlane[x][y];
@@ -67,7 +67,7 @@ function hasCollided(board, floatPlane) {
 function canPlaceBlock(board, block) {
     for (var y = 0; y < block.length; y++)
         for (var x = 3; x < block[y].length; x++)
-            if (board[x][y] !== 0)
+            if (board[x][y + 3] !== 0)
                 return false;
     return true;
 };
@@ -75,7 +75,7 @@ function canPlaceBlock(board, block) {
 function placeBlock(board, block) {
     for (var y = 0; y < block.length; y++)
         for (var x = 0; x < block[y].length; x++)
-            board[x + 3][y] = block[y][x];
+            board[x][y + 3] = block[y][x];
     return board;
 };
 
