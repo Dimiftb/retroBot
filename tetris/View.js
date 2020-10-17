@@ -1,9 +1,7 @@
 const model = require('../tetris/Model.js')
 const discord = require('discord.js')
 
-async function draw(init){
-   //var board = model.board;
-   //var channel = model.channel
+async function draw(init, channel, player_1, player_2){
    let str;
 
    if(init){
