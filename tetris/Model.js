@@ -27,18 +27,21 @@ async function gameLoop(board, floatPlane, isFloating, channel, player_1, player
             board = placeBlock(board, newBlock);
             floatPlane = placeBlock(floatPlane, newBlock);
 
-        } else return; // Game Over
-
+        } else {
+            console.log("Game Over");
+            return; // Game Over
+        }
         isFloating = true;
     } else {
-        if (hasCollided(board)) {
+        if (hasCollided(board, floatPlane)) {
             // Check for Lines
             // 
             isFloating = false;
+        } else {
+            var result = moveBlock(board, floatPlane);
+            board = result[0];
+            floatPlane = result[1];
         }
-        var result = moveBlock(board, floatPlane);
-        board = result[0];
-        floatPlane = result[1];
     }
     message = await view.draw(channel, board, player_1, player_2, message);
 
@@ -60,13 +63,20 @@ function moveBlock(board, floatPlane) {
 };
 
 function hasCollided(board, floatPlane) {
-    // for(var x = 0; x < floatPlane.length)
+    for (var x = 0; x < board.length; x++) {
+        for (var y = 0; y < board[0].length; y++) {
+            if (floatPlane[x][y] !== 0) {
+                if (x === board.length - 1 || (board[x + 1][y] !== 0 && floatPlane[x + 1][y] === 0))
+                    return true;
+            }
+        }
+    }
     return false;
 };
 
 function canPlaceBlock(board, block) {
     for (var y = 0; y < block.length; y++)
-        for (var x = 3; x < block[y].length; x++)
+        for (var x = 0; x < block[y].length; x++)
             if (board[x][y + 3] !== 0)
                 return false;
     return true;
