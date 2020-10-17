@@ -47,6 +47,20 @@ async function gameLoop(board, floatPlane, isFloating, channel, player_1, player
 
     let mov = col[0];
     message = col[1];
+    switch (mov) {
+        case "right":
+            var result = moveRight(board, floatPlane);
+            board = result[0];
+            floatPlane = result[1];
+            break;
+        case "left":
+            var result = moveLeft(board, floatPlane);
+            board = result[0];
+            floatPlane = result[1];
+            break;
+        case "rotate":
+            break;
+    }
 
     var t = setTimeout(gameLoop.bind(null, board, floatPlane, isFloating, channel, player_1, player_2, message), 750);
 };
@@ -65,22 +79,24 @@ function moveBlock(board, floatPlane) {
     return [board, floatPlane];
 };
 
-function canGoLeft(board, floatPlane) {
+function checkLeft(board, floatPlane) {
     for (var x = 0; x < board.length; x++)
         for (var y = 0; y < board[0].length; y++)
-            if (floatPlane[x][y] !== 0 && board[x][y - 1] !== 0)
+            if (floatPlane[x][y] !== 0 && floatPlane[x][y - 1] === 0 && board[x][y - 1] !== 0 && y - 1 > 0)
                 return false;
+    return true;
 }
 
-function canGoRight(board, floatPlane) {
+function checkRight(board, floatPlane) {
     for (var x = 0; x < board.length; x++)
         for (var y = 0; y < board[0].length; y++)
-            if (floatPlane[x][y] !== 0 && board[x][y + 1] !== 0)
+            if (floatPlane[x][y] !== 0 && floatPlane[x][y + 1] === 0 && board[x][y + 1] !== 0 && y + 1 < board[0].length)
                 return false;
+    return true;
 }
 
-function goLeft(board, floatPlane) {
-    if (canGoLeft())
+function moveLeft(board, floatPlane) {
+    if (checkLeft(board, floatPlane))
         for (var x = 0; x < board.length; x++)
             for (var y = 0; y < board[0].length; y++)
                 if (floatPlane[x][y] !== 0) {
@@ -89,10 +105,11 @@ function goLeft(board, floatPlane) {
                     floatPlane[x][y] = 0;
                     board[x][y] = 0;
                 }
+    return [board, floatPlane];
 };
 
-function goRight(board, floatPlane) {
-    if (canGoRight())
+function moveRight(board, floatPlane) {
+    if (checkRight(board, floatPlane))
         for (var x = 0; x < board.length; x++)
             for (var y = board[0].length - 1; y >= 0; y--)
                 if (floatPlane[x][y] !== 0) {
@@ -101,6 +118,7 @@ function goRight(board, floatPlane) {
                     floatPlane[x][y] = 0;
                     board[x][y] = 0;
                 }
+    return [board, floatPlane];
 };
 
 function rotate(board, floatPlane) {
