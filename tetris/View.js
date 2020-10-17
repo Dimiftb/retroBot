@@ -29,12 +29,13 @@ async function draw(channel, board, player_1, player_2, msg){
         return await channel.send(str);
     }
    else{
-        let str = ('\n|');
+        let str = ('|');
+        console.log(board)
         for(var i = 0; i < board.length; i++){
             for(var j = 0; j < board[i].length; j++){
                 switch (board[i][j]) {
                     case 0:
-                        str = str.concat(' ')
+                        str = str.concat('     ')
                         break;
                     case 1:
                         str = str.concat(' :red_square: ')
