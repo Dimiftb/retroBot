@@ -8,9 +8,9 @@ function init(channel, player_1, player_2) {
 
 function createBoard() {
     var board = [];
-    for (var x = 0; x < 10; x++) {
+    for (var x = 0; x < 20; x++) {
         board.push([]);
-        for (var y = 0; y < 20; y++) {
+        for (var y = 0; y < 10; y++) {
             board[x][y] = 0;
         }
     }
@@ -26,7 +26,7 @@ async function gameLoop(board, floatPlane, isFloating, channel, player_1, player
 
             board = placeBlock(board, newBlock);
             floatPlane = placeBlock(floatPlane, newBlock);
-            
+
         } else return; // Game Over
 
         isFloating = true;
@@ -46,11 +46,11 @@ async function gameLoop(board, floatPlane, isFloating, channel, player_1, player
 };
 
 function moveBlock(board, floatPlane) {
-    for (var x = 0; x < 10; x++) {
-        for (var y = 19; y >= 0; y--) {
+    for (var x = board.length - 1; x > 0; x--) {
+        for (var y = 0; y < board[0].length; y++) {
             if (floatPlane[x][y] !== 0) {
-                floatPlane[x][y + 1] = floatPlane[x][y];
-                board[x][y + 1] = floatPlane[x][y];
+                floatPlane[x + 1][y] = floatPlane[x][y];
+                board[x + 1][y] = floatPlane[x][y];
                 floatPlane[x][y] = 0;
                 board[x][y] = 0;
             }

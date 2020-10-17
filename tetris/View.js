@@ -50,7 +50,7 @@ async function draw(channel, board, player_1, player_2, msg){
                         str = str.concat(' :green_square: ')
                         break;
                     case 5:
-                        str = str.concat(' :blue_square:')
+                        str = str.concat(' :blue_square: ')
                         break;
                     case 6:
                         str = str.concat(' :purple_square: ')
