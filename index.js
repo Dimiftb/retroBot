@@ -18,11 +18,23 @@ bot.on('message', msg => {
                 return ['👍'].includes(reaction.emoji.name) && user.id !== messageReaction.author.id && user.id !== msg.author.id;
             };
 
+            const collector = messageReaction.createReactionCollector(filter, { max: 1, time: 15000 });
+
+            collector.on('collect', (reaction, user) => {
+                msg.channel.send(`<@${user.id}> has accepted the challenge from <@${msg.author.id}>.`);
+
+                model.init(msg.channel, user.id, msg.author.id);
+            });
+
+            collector.on('end', collected => {
+                console.log(`Collected ${collected.size} items`);
+            });
+            
             // messageReaction.awaitReactions(filter, { max: 1, time: 60000, errors: ['time'] })
-            //     .then(collected => {
-            //         msg.channel.send(`${collected.user} has accepted the challenge from <@${msg.author.id}>.`);
+            //     .then((reaction, user) => {
+            //         msg.channel.send(`${user.tag} has accepted the challenge from <@${msg.author.id}>.`);
             //     });
-            model.init();
+            // model.init();
         });
 
 
