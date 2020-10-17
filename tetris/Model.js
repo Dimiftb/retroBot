@@ -16,9 +16,10 @@ function createBoard() {
     return board;
 }
 
-function gameLoop(board) {
+function gameLoop(board, channel, player_1, player_2) {
     var isFloating = false;
     var floatPlane;
+    var newGame = true;
 
     if (!isFloating) {
         floatPlane = createBoard();
@@ -39,7 +40,8 @@ function gameLoop(board) {
         floatPlane = result[1];
     }
 
-    view.draw(true, channel, player_1, player_2);
+    view.draw(newGame, channel, player_1, player_2);
+    if(newGame) newGame = false;
 };
 
 function moveBlock(board, floatPlane) {
