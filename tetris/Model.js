@@ -128,6 +128,7 @@ function checkRotate(board, floatPlane) {
 
 function rotate(board, floatPlane) {
     // Finding the center of the block
+    //console.log(floatPlane)
     let top = floatPlane[0].length - 1, bot = 0, left = floatPlane.length - 1, right = 0;
     for (var x = 0; x < floatPlane.length; x++)
         for (var y = 0; y < floatPlane[0].length; y++)
@@ -151,7 +152,10 @@ function rotate(board, floatPlane) {
         }
         block.push(row);
     }
+    console.log(block)
+    if(block.length > 3 || block[0].length > 3) {
 
+    }
     // Equalize height and width
     if(top - bot > right - left){
         for (const o of block) {
