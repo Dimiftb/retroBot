@@ -128,7 +128,7 @@ function checkRotate(board, floatPlane) {
 
 function rotate(board, floatPlane) {
     // Finding the center of the block
-    let top = floatPlane.length - 1, bot = 0, left = floatPlane[0].length - 1, right = 0;
+    let top = floatPlane[0].length - 1, bot = 0, left = floatPlane.length - 1, right = 0;
     for (var x = 0; x < floatPlane.length; x++)
         for (var y = 0; y < floatPlane[0].length; y++)
             if (floatPlane[x][y] !== 0) {
@@ -142,6 +142,7 @@ function rotate(board, floatPlane) {
                     right = x;
             }
 
+
     let block = [];
     for (var x = left; x <= right; x++) {
         let row = [];
@@ -150,15 +151,32 @@ function rotate(board, floatPlane) {
         }
         block.push(row);
     }
+
+    // Equalize height and width
+    if(top - bot > right - left){
+        for (const o of block) {
+            
+        }
+    }
+
+    rotateBlock(block);
     // console.log(block);
 
-    let center_x = (right - left);
-    let center_y = (bot - top);
+    // let center_x = (right - left);
+    // let center_y = (bot - top);
 
 };
 
 function rotateBlock(block) {
+    var rotatedBlock = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
+    var center_x = block[0].length / 2,
+        center_y = block.length / 2;
 
+    for (var x = 0; x < block.length; x++)
+        for (var y = 0; y < block[0].length; y++) {
+            x2 = (y + center_x - center_y)
+            y2 = (center_x + center_y - x - block.length)
+        }
 }
 
 function hasCollided(board, floatPlane) {
