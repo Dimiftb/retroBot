@@ -59,6 +59,7 @@ async function gameLoop(board, floatPlane, isFloating, channel, player_1, player
             floatPlane = result[1];
             break;
         case "rotate":
+            rotate(board, floatPlane);
             break;
     }
 
@@ -121,9 +122,44 @@ function moveRight(board, floatPlane) {
     return [board, floatPlane];
 };
 
-function rotate(board, floatPlane) {
+function checkRotate(board, floatPlane) {
 
 };
+
+function rotate(board, floatPlane) {
+    // Finding the center of the block
+    let top = floatPlane.length - 1, bot = 0, left = floatPlane[0].length - 1, right = 0;
+    for (var x = 0; x < floatPlane.length; x++)
+        for (var y = 0; y < floatPlane[0].length; y++)
+            if (floatPlane[x][y] !== 0) {
+                if (top >= y)
+                    top = y;
+                if (bot <= y)
+                    bot = y;
+                if (left >= x)
+                    left = x;
+                if (right <= x)
+                    right = x;
+            }
+
+    let block = [];
+    for (var x = left; x <= right; x++) {
+        let row = [];
+        for (var y = top; y <= bot; y++) {
+            row.push(floatPlane[x][y]);
+        }
+        block.push(row);
+    }
+    console.log(block);
+
+    let center_x = (right - left);
+    let center_y = (bot - top);
+
+};
+
+function rotateBlock(block) {
+
+}
 
 function hasCollided(board, floatPlane) {
     for (var x = 0; x < board.length; x++) {
