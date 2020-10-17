@@ -11,6 +11,7 @@ bot.on('message', msg => {
     const command = args.shift().toLocaleLowerCase();
 
     if (command === "challenge") {
+        model.init(msg.channel, msg.channel, msg.author.id);
         msg.channel.send(`<@${msg.author.id}> has issued a challenge to retro pong.`).then(messageReaction => {
             messageReaction.react("👍");
 

@@ -2,7 +2,8 @@ const view = require('../tetris/View.js');
 
 function init(channel, player_1, player_2) {
     var board = createBoard();
-    setInterval(gameLoop.bind(this, board, channel, player_1, player_2), 1000);
+    var floatPlane = createBoard();
+    gameLoop(board, floatPlane, false, channel, player_1, player_2);
 };
 
 function createBoard() {
@@ -16,16 +17,18 @@ function createBoard() {
     return board;
 }
 
-function gameLoop(board, channel, player_1, player_2) {
-    var isFloating = false;
-    var floatPlane;
+async function gameLoop(board, floatPlane, isFloating, channel, player_1, player_2, message) {
     if (!isFloating) {
         floatPlane = createBoard();
         var newBlock = spawnBlock();
+
         if (canPlaceBlock(board, newBlock)) {
+
             board = placeBlock(board, newBlock);
-            floatPlane = placeBlock(board, newBlock);
+            floatPlane = placeBlock(floatPlane, newBlock);
+            
         } else return; // Game Over
+
         isFloating = true;
     } else {
         if (hasCollided(board)) {
@@ -37,8 +40,9 @@ function gameLoop(board, channel, player_1, player_2) {
         board = result[0];
         floatPlane = result[1];
     }
+    message = await view.draw(channel, board, player_1, player_2, message);
 
-    view.draw(channel, board, player_1, player_2);
+    var t = setTimeout(gameLoop.bind(null, board, floatPlane, isFloating, channel, player_1, player_2, message), 2000);
 };
 
 function moveBlock(board, floatPlane) {
