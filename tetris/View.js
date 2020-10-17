@@ -49,24 +49,23 @@ async function draw(channel, board, player_1, player_2, msg){
     }
     else{
         let action = "null"
-        msg.edit(create_string(board));
+        await msg.edit(create_string(board));
 
         if(await msg.reactions.resolve('⬅️').users.resolve(player_1) !== null){
             // left
             action = "left"
-            msg.reactions.resolve('⬅️').users.remove(player_1);
+            await msg.reactions.resolve('⬅️').users.remove(player_1);
         }else if(await msg.reactions.resolve('🔄').users.resolve(player_1) !== null){
             // rotate
             action = "rotate"
-            msg.reactions.resolve('🔄').users.remove(player_1);
+            await msg.reactions.resolve('🔄').users.remove(player_1);
         }
          else if(await msg.reactions.resolve('➡️').users.resolve(player_1) !== null){
             // right
             action = "right"
-            msg.reactions.resolve('➡️').users.remove(player_1);
+            await msg.reactions.resolve('➡️').users.remove(player_1);
         }
-
-        return [action, await msg]
+        return [action, msg]
     }   
 }
 

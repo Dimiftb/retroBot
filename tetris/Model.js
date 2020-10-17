@@ -150,7 +150,7 @@ function rotate(board, floatPlane) {
         }
         block.push(row);
     }
-    console.log(block);
+    // console.log(block);
 
     let center_x = (right - left);
     let center_y = (bot - top);
