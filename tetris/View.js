@@ -51,16 +51,15 @@ async function draw(channel, board, player_1, player_2, msg){
         const filter = (reaction, user) => {
             return ['⬅️', '➡️'].includes(reaction.emoji.name) && user.id === player_1.id 
         };
-
-        if(typeof msg.reactions.cache.get('⬅️').users.cache.get(player_1) !== 'undefined'){
+        if(msg.reactions.resolve('⬅️').users.resolve(player_1) !== null){
             // left
             msg.reactions.resolve('⬅️').users.remove(player_1);
-        } else if(typeof msg.reactions.cache.get('➡️').users.cache.get(player_1) !== 'undefined'){
+        } else if(msg.reactions.resolve('➡️').users.resolve(player_1) !== null){
             // right
             msg.reactions.resolve('➡️').users.remove(player_1);
         }
 
-        return await (react,msg);
+        return await (react, msg);
     }   
 }
 
