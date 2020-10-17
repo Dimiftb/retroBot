@@ -1,65 +1,67 @@
 const model = require('../tetris/Model.js')
 const discord = require('discord.js')
 
-async function draw(init, channel, player_1, player_2){
-   let str;
+async function draw(channel, board, player_1, player_2){
+    let msg
 
-   if(init){
-        str.concat( '|                    |\n' + 
-                    '|                    |\n' +
-                    '|                    |\n' +
-                    '|                    |\n' +
-                    '|                    |\n' +
-                    '|                    |\n' +
-                    '|                    |\n' +
-                    '|                    |\n' +
-                    '|                    |\n' +
-                    '|                    |\n' + 
-                    '|                    |\n' +
-                    '|                    |\n' +
-                    '|                    |\n' +
-                    '|                    |\n' +
-                    '|                    |\n' +
-                    '|                    |\n' +
-                    '|                    |\n' +
-                    '|                    |\n' +
-                    '|                    |\n' +
-                    '|                    |\n' +
-                    ' _ _ _ _ _ _ _ _ _ _ _\n\n' +
-            ':arrow_left:                    :arrow_right:');
+    if(msg === 'undefined'){
+        let str = ( '|                                                            |\n' + 
+                    '|                                                            |\n' + 
+                    '|                                                            |\n' + 
+                    '|                                                            |\n' + 
+                    '|                                                            |\n' + 
+                    '|                                                            |\n' + 
+                    '|                                                            |\n' + 
+                    '|                                                            |\n' + 
+                    '|                                                            |\n' + 
+                    '|                                                            |\n' + 
+                    '|                                                            |\n' + 
+                    '|                                                            |\n' + 
+                    '|                                                            |\n' + 
+                    '|                                                            |\n' + 
+                    '|                                                            |\n' + 
+                    '|                                                            |\n' + 
+                    '|                                                            |\n' + 
+                    '|                                                            |\n' + 
+                    '|                                                            |\n' + 
+                    '|                                                            |\n' + 
+                    '|                                                            |\n' + 
+                    '---------------------------------------\n\n' +
+            ':arrow_left:                                                  :arrow_right:');
             
-        const msg = await channel.send(str);
+        msg = await channel.send(str);
     }
    else{
-        str.concat('|')
+        let str = ('|')
         for(var i = 0; i < board.length; i++){
             for(var j = 0; i < board[i].length; j++){
                 switch (board[i][j]) {
                     case '0':
-                        str.concat(' ')
+                        str = str.concat(' ')
                         break;
                     case '1':
-                        str.concat(' :red_square: ')
+                        str = str.concat(' :red_square: ')
                         break;
                     case '2':
-                        str.concat(' :orange_square: ')
+                        str = str.concat(' :orange_square: ')
                         break;
                     case '3':
-                        str.concat(' :yellow_square: ')
+                        str = str.concat(' :yellow_square: ')
                         break;
                     case '4':
-                        str.concat(' :green_square: ')
+                        str = str.concat(' :green_square: ')
                         break;
                     case '5':
-                        str.concat(' :blue_square:')
+                        str = str.concat(' :blue_square:')
                         break;
                     case '6':
-                        str.concat(' :purple_square: ')
+                        str = str.concat(' :purple_square: ')
                         break;    
                 }
-            str.concat('|\n')
+                str = str.concat('|\n')
             }
-        str.concat(' _ _ _ _ _ _ _ _ _ _ _')
+            str = str.concat('---------------------------------------\n\n' +
+            ':arrow_left:                                                  :arrow_right:');
         }
         msg.edit(str)
     }

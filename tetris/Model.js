@@ -2,7 +2,7 @@ const view = require('../tetris/View.js');
 
 function init(channel, player_1, player_2) {
     var board = createBoard();
-    setInterval(gameLoop.bind(this, board, channel, player_1, player_2), 500);
+    setInterval(gameLoop.bind(this, board, channel, player_1, player_2), 1000);
 };
 
 function createBoard() {
@@ -19,8 +19,6 @@ function createBoard() {
 function gameLoop(board, channel, player_1, player_2) {
     var isFloating = false;
     var floatPlane;
-    var newGame = true;
-
     if (!isFloating) {
         floatPlane = createBoard();
         var newBlock = spawnBlock();
@@ -40,8 +38,7 @@ function gameLoop(board, channel, player_1, player_2) {
         floatPlane = result[1];
     }
 
-    view.draw(newGame, channel, player_1, player_2);
-    if(newGame) newGame = false;
+    view.draw(channel, board, player_1, player_2);
 };
 
 function moveBlock(board, floatPlane) {
