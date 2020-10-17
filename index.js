@@ -11,7 +11,7 @@ bot.on('message', msg => {
     const command = args.shift().toLocaleLowerCase();
 
     if (command === "challenge") {
-        model.init(msg.channel, msg.channel, msg.author.id);
+        model.init(msg.channel, msg.author.id, msg.author.id);
         msg.channel.send(`<@${msg.author.id}> has issued a challenge to retro pong.`).then(messageReaction => {
             messageReaction.react("👍");
 
@@ -24,7 +24,7 @@ bot.on('message', msg => {
             collector.on('collect', (reaction, user) => {
                 msg.channel.send(`<@${user.id}> has accepted the challenge from <@${msg.author.id}>.`);
 
-                model.init(msg.channel, user.id, msg.author.id);
+                model.init(msg.channel, msg.author.id, user.id);
             });
 
             collector.on('end', collected => {

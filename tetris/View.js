@@ -42,8 +42,8 @@ async function draw(channel, board, player_1, player_2, msg){
 
     if(typeof msg === "undefined"){
         let msg = await channel.send("Loading board...")
-        msg.react("⬅️")
-        msg.react("➡️")
+        await msg.react("⬅️")
+        await msg.react("➡️")
         return msg
     }
     else{
@@ -51,10 +51,15 @@ async function draw(channel, board, player_1, player_2, msg){
         const filter = (reaction, user) => {
             return ['⬅️', '➡️'].includes(reaction.emoji.name) && user.id === player_1.id 
         };
-        
-        for (reaction in msg.reactions){
-            console.log(reaction['cache'])
+
+        if(typeof msg.reactions.cache.get('⬅️').users.cache.get(player_1) !== 'undefined'){
+            // left
+            msg.reactions.resolve('⬅️').users.remove(player_1);
+        } else if(typeof msg.reactions.cache.get('➡️').users.cache.get(player_1) !== 'undefined'){
+            // right
+            msg.reactions.resolve('➡️').users.remove(player_1);
         }
+
         return await (react,msg);
     }   
 }
