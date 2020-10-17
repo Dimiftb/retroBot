@@ -33,17 +33,30 @@ function create_string(board){
             }
             str = str.concat('|\n')
         }
-        str = str.concat('-------------------------------------------\n\n' +
-        ':arrow_left:                                                  :arrow_right:')
+        str = str.concat('---------------------------------------------\n\n')
 
     return str
 }
 async function draw(channel, board, player_1, player_2, msg){
+    let react
 
-    if(typeof msg === "undefined")
-        return channel.send("Loading board... ")
-    else
+    if(typeof msg === "undefined"){
+        let msg = await channel.send("Loading board...")
+        msg.react("⬅️")
+        msg.react("➡️")
+        return msg
+    }
+    else{
         msg.edit(create_string(board));
-        return msg;   
+        const filter = (reaction, user) => {
+            return ['⬅️', '➡️'].includes(reaction.emoji.name) && user.id === player_1.id 
+        };
+        
+        for (reaction in msg.reactions){
+            console.log(reaction['cache'])
+        }
+        return await (react,msg);
+    }   
 }
+
 exports.draw = draw;
