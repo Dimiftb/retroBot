@@ -58,7 +58,7 @@ async function gameLoop(board, floatPlane, isFloating, channel, player_1, player
             break;
     }
 
-    var t = setTimeout(gameLoop.bind(null, board, floatPlane, isFloating, channel, player_1, player_2, message, score), 750);
+    var t = setTimeout(gameLoop.bind(null, board, floatPlane, isFloating, channel, player_1, player_2, message, score), 350);
 };
 
 function checkLines(board, score) {
