@@ -3,7 +3,8 @@ const view = require('../tetris/View.js');
 function init(channel, player_1, player_2) {
     var board = createBoard();
     var floatPlane = createBoard();
-    gameLoop(board, floatPlane, false, channel, player_1, player_2);
+    var score = 0;
+    gameLoop(board, floatPlane, false, channel, player_1, player_2, undefined, score);
 };
 
 function createBoard() {
@@ -17,7 +18,7 @@ function createBoard() {
     return board;
 }
 
-async function gameLoop(board, floatPlane, isFloating, channel, player_1, player_2, message) {
+async function gameLoop(board, floatPlane, isFloating, channel, player_1, player_2, message, score) {
     if (!isFloating) {
         floatPlane = createBoard();
         var newBlock = spawnBlock();
@@ -28,14 +29,14 @@ async function gameLoop(board, floatPlane, isFloating, channel, player_1, player
             floatPlane = placeBlock(floatPlane, newBlock);
 
         } else {
-            console.log("Game Over");
+            view.drawGameOver
             return; // Game Over
         }
         isFloating = true;
     } else {
         if (hasCollided(board, floatPlane)) {
             // Check for Lines
-            board = checkLines(board);
+            [score, board] = checkLines(board, score);
 
             isFloating = false;
         } else {
@@ -44,7 +45,7 @@ async function gameLoop(board, floatPlane, isFloating, channel, player_1, player
             floatPlane = result[1];
         }
     }
-    let col = await view.draw(channel, board, player_1, player_2, message);
+    let col = await view.draw(channel, board, player_1, player_2, message, score);
 
     let mov = col[0];
     message = col[1];
@@ -64,10 +65,10 @@ async function gameLoop(board, floatPlane, isFloating, channel, player_1, player
             break;
     }
 
-    var t = setTimeout(gameLoop.bind(null, board, floatPlane, isFloating, channel, player_1, player_2, message), 750);
+    var t = setTimeout(gameLoop.bind(null, board, floatPlane, isFloating, channel, player_1, player_2, message, score), 750);
 };
 
-function checkLines(board) {
+function checkLines(board, score) {
     for (var y = 0; y < board.length; y++) {
         var x = 0;
         for (; x < board[0].length; x++)
@@ -76,10 +77,11 @@ function checkLines(board) {
         if (x === board[0].length) {
             board.splice(y, 1);
             board.unshift([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+            score += 1;
         }
     }
 
-    return board;
+    return [score,board];
 };
 
 function moveBlock(board, floatPlane) {
@@ -273,7 +275,7 @@ function spawnBlock() {
     [[1, 1], [1, 1]]               //Square Block
     ];
 
-    var piece = pieces[Math.floor(Math.random() * 7)].slice();
+    var piece = pieces[Math.floor(Math.random() * 1)].slice();
     var color = Math.floor(Math.random() * 6) + 1;
 
     for (var x = 0; x < piece.length; x++)

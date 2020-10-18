@@ -1,9 +1,13 @@
 const model = require('../tetris/Model.js')
 const discord = require('discord.js')
 
+function drawGameOver(msg, score){
+    let str = `GAME OVER!! Your score was ${score} (:)`
+    msg.edit(str);
+}
 
-function create_string(board){
-    let str = ('');
+function create_string(board, score){
+    let str = (`SCORE: ${score}\n` + '---------------------------------------------\n');
         for(var i = 0; i < board.length; i++){
             str = str.concat('|')
             for(var j = 0; j < board[i].length; j++){
@@ -37,7 +41,7 @@ function create_string(board){
 
     return str
 }
-async function draw(channel, board, player_1, player_2, msg){
+async function draw(channel, board, player_1, player_2, msg, score){
     let react
 
     if(typeof msg === "undefined"){
@@ -49,7 +53,7 @@ async function draw(channel, board, player_1, player_2, msg){
     }
     else{
         let action = "null"
-        await msg.edit(create_string(board));
+        await msg.edit(create_string(board, score));
 
         if(await msg.reactions.resolve('⬅️').users.resolve(player_1) !== null){
             // left
@@ -70,3 +74,4 @@ async function draw(channel, board, player_1, player_2, msg){
 }
 
 exports.draw = draw;
+exports.drawGameOver = drawGameOver;
