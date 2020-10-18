@@ -122,65 +122,102 @@ function moveRight(board, floatPlane) {
     return [board, floatPlane];
 };
 
-function checkRotate(board, floatPlane) {
-
-};
-
 function rotate(board, floatPlane) {
-    // Finding the center of the block
-    //console.log(floatPlane)
-    let top = floatPlane[0].length - 1, bot = 0, left = floatPlane.length - 1, right = 0;
-    for (var x = 0; x < floatPlane.length; x++)
-        for (var y = 0; y < floatPlane[0].length; y++)
-            if (floatPlane[x][y] !== 0) {
-                if (top >= y)
-                    top = y;
-                if (bot <= y)
-                    bot = y;
+    // Finding the center of the Block
+    let left = floatPlane[0].length - 1, right = 0, top = floatPlane.length - 1, bot = 0;
+    for (var y = 0; y < floatPlane.length; y++)
+        for (var x = 0; x < floatPlane[0].length; x++)
+            if (floatPlane[y][x] !== 0) {
                 if (left >= x)
                     left = x;
                 if (right <= x)
                     right = x;
+                if (top >= y)
+                    top = y;
+                if (bot <= y)
+                    bot = y;
             }
 
-
+    // Isolate the Block
     let block = [];
-    for (var x = left; x <= right; x++) {
+    for (var y = top; y <= bot; y++) {
         let row = [];
-        for (var y = top; y <= bot; y++) {
-            row.push(floatPlane[x][y]);
+        for (var x = left; x <= right; x++) {
+            row.push(floatPlane[y][x]);
         }
         block.push(row);
     }
-    console.log(block)
-    if(block.length > 3 || block[0].length > 3) {
 
+    // Rotate the Block
+    if (block.length > 3 || block[0].length > 3) {      // Long Piece
+        let col = block[0][0];
+        if (block.length > 1)
+            block = [col, col, col, col];
+        else
+            block = [[col], [col], [col], [col]]
+    } else if (block.length < 3 && block[0].length < 3) // Square Block
+        return;
+    else {
+        // Get the 3x3 Grid
+        if (block.length === 2)
+            block.push([0, 0, 0]);
+        else for (a of block) a.push(0);
+
+        rotateBlock(block);
     }
-    // Equalize height and width
-    if(top - bot > right - left){
-        for (const o of block) {
-            
-        }
-    }
 
-    rotateBlock(block);
-    // console.log(block);
+    // Remove the block from the grid
+    for (var y = 0; y < floatPlane.length; y++)
+        for (var x = 0; x < floatPlane[0].length; x++)
+            if (floatPlane[y][x] !== 0) {
+                floatPlane[y][x] = 0;
+                board[y][x] = 0;
+            }
 
-    // let center_x = (right - left);
-    // let center_y = (bot - top);
+    // Place The Block back on the grid
+    checkRotPlacement(block, board, floatPlane, left, top);
 
 };
 
-function rotateBlock(block) {
-    var rotatedBlock = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
-    var center_x = block[0].length / 2,
-        center_y = block.length / 2;
+function checkRotPlacement(block, board, floatPlane, left, top) {
+    if (left + block[0].length > board[0].length)
+        left = board[0].length - block[0].length;
 
-    for (var x = 0; x < block.length; x++)
-        for (var y = 0; y < block[0].length; y++) {
-            x2 = (y + center_x - center_y)
-            y2 = (center_x + center_y - x - block.length)
+    var temp = checkTopPlacement(block, board, top, left);
+    for (; temp !== top; temp = checkTopPlacement(block, board, top, left))
+        top = temp;
+
+    // Place the Block
+    for (var y = top; y < top + block.length; y++)
+        for (var x = left; x < left + block[0].length; x++) {
+            if (block[y - top][x - left] !== 0) {
+                floatPlane[y][x] = block[y - top][x - left];
+                board[y][x] = block[y - top][x - left];
+            }
         }
+}
+
+function checkTopPlacement(block, board, top, left) {
+    for (var y = top; y < top + block.length; y++)
+        for (var x = left; x < left + block[0].length; x++) {
+            if (block[y - top][x - left] !== 0 && board[y][x] !== 0) {
+                top--;
+            }
+        }
+    return top;
+}
+
+function rotateBlock(block) {
+    // Transpose matrix, block is the Piece.
+    for (let y = 0; y < block.length; ++y) {
+        for (let x = 0; x < y; ++x) {
+            [block[x][y], block[y][x]] =
+                [block[y][x], block[x][y]];
+        }
+    }
+
+    // Reverse the order of the columns.
+    block.forEach(row => row.reverse());
 }
 
 function hasCollided(board, floatPlane) {
