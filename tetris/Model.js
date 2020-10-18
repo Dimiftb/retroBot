@@ -29,7 +29,7 @@ async function gameLoop(board, floatPlane, isFloating, channel, player_1, player
             floatPlane = placeBlock(floatPlane, newBlock);
 
         } else {
-            view.drawGameOver
+            view.drawGameOver(message, score);
             return; // Game Over
         }
         isFloating = true;
@@ -40,25 +40,18 @@ async function gameLoop(board, floatPlane, isFloating, channel, player_1, player
 
             isFloating = false;
         } else {
-            var result = moveBlock(board, floatPlane);
-            board = result[0];
-            floatPlane = result[1];
+            [board, floatPlane] = moveBlock(board, floatPlane);
         }
     }
-    let col = await view.draw(channel, board, player_1, player_2, message, score);
+    let mov;
+    [mov, message] = await view.draw(channel, board, player_1, player_2, message, score);
 
-    let mov = col[0];
-    message = col[1];
     switch (mov) {
         case "right":
-            var result = moveRight(board, floatPlane);
-            board = result[0];
-            floatPlane = result[1];
+            [board, floatPlane] = moveRight(board, floatPlane);
             break;
         case "left":
-            var result = moveLeft(board, floatPlane);
-            board = result[0];
-            floatPlane = result[1];
+            [board, floatPlane] = moveLeft(board, floatPlane);
             break;
         case "rotate":
             rotate(board, floatPlane);
