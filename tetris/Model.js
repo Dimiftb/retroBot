@@ -268,7 +268,7 @@ function spawnBlock() {
     [[1, 1], [1, 1]]               //Square Block
     ];
 
-    var piece = pieces[Math.floor(Math.random() * 1)].slice();
+    var piece = pieces[Math.floor(Math.random() * 7)].slice();
     var color = Math.floor(Math.random() * 6) + 1;
 
     for (var x = 0; x < piece.length; x++)
