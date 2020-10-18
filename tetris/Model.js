@@ -8,10 +8,10 @@ function init(channel, player_1, player_2) {
 
 function createBoard() {
     var board = [];
-    for (var x = 0; x < 20; x++) {
+    for (var y = 0; y < 20; y++) {
         board.push([]);
-        for (var y = 0; y < 10; y++) {
-            board[x][y] = 0;
+        for (var x = 0; x < 10; x++) {
+            board[y][x] = 0;
         }
     }
     return board;
@@ -35,7 +35,8 @@ async function gameLoop(board, floatPlane, isFloating, channel, player_1, player
     } else {
         if (hasCollided(board, floatPlane)) {
             // Check for Lines
-            // 
+            board = checkLines(board);
+
             isFloating = false;
         } else {
             var result = moveBlock(board, floatPlane);
@@ -66,14 +67,29 @@ async function gameLoop(board, floatPlane, isFloating, channel, player_1, player
     var t = setTimeout(gameLoop.bind(null, board, floatPlane, isFloating, channel, player_1, player_2, message), 750);
 };
 
+function checkLines(board) {
+    for (var y = 0; y < board.length; y++) {
+        var x = 0;
+        for (; x < board[0].length; x++)
+            if (board[y][x] === 0)
+                break;
+        if (x === board[0].length) {
+            board.splice(y, 1);
+            board.unshift([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+        }
+    }
+
+    return board;
+};
+
 function moveBlock(board, floatPlane) {
-    for (var x = board.length - 1; x >= 0; x--) {
-        for (var y = 0; y < board[0].length; y++) {
-            if (floatPlane[x][y] !== 0) {
-                floatPlane[x + 1][y] = floatPlane[x][y];
-                board[x + 1][y] = floatPlane[x][y];
-                floatPlane[x][y] = 0;
-                board[x][y] = 0;
+    for (var y = board.length - 1; y >= 0; y--) {
+        for (var x = 0; x < board[0].length; x++) {
+            if (floatPlane[y][x] !== 0) {
+                floatPlane[y + 1][x] = floatPlane[y][x];
+                board[y + 1][x] = floatPlane[y][x];
+                floatPlane[y][x] = 0;
+                board[y][x] = 0;
             }
         }
     }
@@ -81,43 +97,43 @@ function moveBlock(board, floatPlane) {
 };
 
 function checkLeft(board, floatPlane) {
-    for (var x = 0; x < board.length; x++)
-        for (var y = 0; y < board[0].length; y++)
-            if (floatPlane[x][y] !== 0 && floatPlane[x][y - 1] === 0 && board[x][y - 1] !== 0 && y - 1 > 0)
+    for (var y = 0; y < board.length; y++)
+        for (var x = 0; x < board[0].length; x++)
+            if (floatPlane[y][x] !== 0 && floatPlane[y][x - 1] === 0 && board[y][x - 1] !== 0 && x - 1 > 0)
                 return false;
     return true;
 }
 
 function checkRight(board, floatPlane) {
-    for (var x = 0; x < board.length; x++)
-        for (var y = 0; y < board[0].length; y++)
-            if (floatPlane[x][y] !== 0 && floatPlane[x][y + 1] === 0 && board[x][y + 1] !== 0 && y + 1 < board[0].length)
+    for (var y = 0; y < board.length; y++)
+        for (var x = 0; x < board[0].length; x++)
+            if (floatPlane[y][x] !== 0 && floatPlane[y][x + 1] === 0 && board[y][x + 1] !== 0 && x + 1 < board[0].length)
                 return false;
     return true;
 }
 
 function moveLeft(board, floatPlane) {
     if (checkLeft(board, floatPlane))
-        for (var x = 0; x < board.length; x++)
-            for (var y = 0; y < board[0].length; y++)
-                if (floatPlane[x][y] !== 0) {
-                    floatPlane[x][y - 1] = floatPlane[x][y];
-                    board[x][y - 1] = floatPlane[x][y];
-                    floatPlane[x][y] = 0;
-                    board[x][y] = 0;
+        for (var y = 0; y < board.length; y++)
+            for (var x = 0; x < board[0].length; x++)
+                if (floatPlane[y][x] !== 0) {
+                    floatPlane[y][x - 1] = floatPlane[y][x];
+                    board[y][x - 1] = floatPlane[y][x];
+                    floatPlane[y][x] = 0;
+                    board[y][x] = 0;
                 }
     return [board, floatPlane];
 };
 
 function moveRight(board, floatPlane) {
     if (checkRight(board, floatPlane))
-        for (var x = 0; x < board.length; x++)
-            for (var y = board[0].length - 1; y >= 0; y--)
-                if (floatPlane[x][y] !== 0) {
-                    floatPlane[x][y + 1] = floatPlane[x][y];
-                    board[x][y + 1] = floatPlane[x][y];
-                    floatPlane[x][y] = 0;
-                    board[x][y] = 0;
+        for (var y = 0; y < board.length; y++)
+            for (var x = board[0].length - 1; x >= 0; x--)
+                if (floatPlane[y][x] !== 0) {
+                    floatPlane[y][x + 1] = floatPlane[y][x];
+                    board[y][x + 1] = floatPlane[y][x];
+                    floatPlane[y][x] = 0;
+                    board[y][x] = 0;
                 }
     return [board, floatPlane];
 };
@@ -152,7 +168,7 @@ function rotate(board, floatPlane) {
     if (block.length > 3 || block[0].length > 3) {      // Long Piece
         let col = block[0][0];
         if (block.length > 1)
-            block = [col, col, col, col];
+            block = [[col, col, col, col]];
         else
             block = [[col], [col], [col], [col]]
     } else if (block.length < 3 && block[0].length < 3) // Square Block
